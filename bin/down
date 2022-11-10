@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+instanceNamePrefix="nomad-test"
+
+for name in "$instanceNamePrefix"-{1,2,3}; do
+    multipass delete --purge $name
+done
