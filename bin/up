@@ -2,7 +2,7 @@
 set -euo pipefail
 
 instanceNamePrefix="nomad-test"
-customization="--mem 2g"
+customization="--memory 1g --disk 20g"
 
 for name in "$instanceNamePrefix"-{1,2,3}; do
     multipass launch $customization --name "$name" --cloud-init user-data jammy
