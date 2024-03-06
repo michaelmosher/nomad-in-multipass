@@ -4,7 +4,7 @@ locals {
   release_version = "2.40.1"
 
   # eg. https://github.com/prometheus/prometheus/releases/download/v2.39.1/prometheus-2.39.1.linux-arm64.tar.gz
-  releases_repo    = "https://github.com/prometheus/prometheus"
+  releases_repo         = "https://github.com/prometheus/prometheus"
   artifact              = "prometheus-${local.release_version}.${attr.kernel.name}-${attr.cpu.arch}.tar.gz"
   artifact_url          = "${local.releases_repo}/releases/download/v${local.release_version}/${local.artifact}"
   artifact_checksum_url = "${local.releases_repo}/releases/download/v${local.release_version}/sha256sums.txt"
@@ -37,58 +37,58 @@ locals {
 }
 
 job "prometheus" {
-    datacenters = ["multipass"]
-    type = "service"
+  datacenters = ["multipass"]
+  type        = "service"
 
-    group "server" {
-        count = 1
+  group "server" {
+    count = 1
 
-        network {
-            port "main" {}
-        }
-
-        service {
-            name = "${JOB}-server"
-            provider = "nomad"
-            port = "main"
-
-            check {
-                type     = "http"
-                path     = "/-/healthy"
-                interval = "30s"
-                timeout  = "5s"
-            }
-        }
-
-        task "main" {
-            driver = "exec"
-
-            config {
-                command = "local/${local.executable}"
-                args    = [
-                  "--config.file", "local/prometheus.yml",
-                  "--web.listen-address", "${NOMAD_ADDR_main}",
-                ]
-            }
-
-            artifact {
-                source      = local.artifact_url
-                // options {
-                //   checksum = "file:${local.artifact_checksum_url}"
-                // }
-            }
-
-            template {
-                destination   = "local/prometheus.yml"
-                change_mode   = "signal"
-                change_signal = "SIGHUP"
-                data = local.config_file
-            }
-
-            resources {
-                cpu    = 100
-                memory = 256 # MB
-            }
-        }
+    network {
+      port "main" {}
     }
+
+    service {
+      name     = "${JOB}-server"
+      provider = "nomad"
+      port     = "main"
+
+      check {
+        type     = "http"
+        path     = "/-/healthy"
+        interval = "30s"
+        timeout  = "5s"
+      }
+    }
+
+    task "main" {
+      driver = "exec"
+
+      config {
+        command = "local/${local.executable}"
+        args = [
+          "--config.file", "local/prometheus.yml",
+          "--web.listen-address", "${NOMAD_ADDR_main}",
+        ]
+      }
+
+      artifact {
+        source = local.artifact_url
+        // options {
+        //   checksum = "file:${local.artifact_checksum_url}"
+        // }
+      }
+
+      template {
+        destination   = "local/prometheus.yml"
+        change_mode   = "signal"
+        change_signal = "SIGHUP"
+        data          = local.config_file
+      }
+
+      resources {
+        cpu    = 100
+        memory = 256 # MB
+      }
+    }
+  }
 }
