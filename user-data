@@ -181,15 +181,16 @@ write_files:
       MulticastDNS=yes
     path: /etc/systemd/resolved.conf.d/mdns.conf
 
+  # On Ubuntu 22.04 running on Multipass for macOS (backed by QEMU), my network
+  # interface is consistently named "enp0s1". Use `ip link` to find the
+  # appropriate name and update this accordingly.
   - content: |
-      #!/usr/bin/env bash
+      [Match]
+      Name=enp0s1
 
-      # enable mdns for every active network interface
-      for link in $(ip -br address | grep UP | cut -f1 -d' '); do
-        resolvectl mdns $link true
-      done
-    path: /var/lib/cloud/scripts/per-boot/enable-mdns.sh
-    permissions: "0755"
+      [Network]
+      MulticastDNS=yes
+    path: /etc/systemd/network/10-netplan-enp0s1.network.d/mdns.conf
 
   - content: |
       datacenter = "multipass"
@@ -219,5 +220,6 @@ write_files:
 
 runcmd:
   - [systemctl, restart, systemd-resolved]
+  - [systemctl, restart, systemd-networkd]
   - [systemctl, enable, nomad]
   - [systemctl, start, nomad]
