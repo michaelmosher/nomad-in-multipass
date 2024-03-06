@@ -5,6 +5,6 @@ instanceNamePrefix="nomad-test"
 customization="--mem 2g"
 
 for name in "$instanceNamePrefix"-{1,2,3}; do
-    multipass launch $customization --name "$name" --cloud-init user-data lts
+    multipass launch $customization --name "$name" --cloud-init user-data jammy
     multipass info "$name"
 done

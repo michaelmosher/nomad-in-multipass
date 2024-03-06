@@ -44,6 +44,7 @@ apt:
 
     docker.list:
       # if multipass supported jinja, we'd use '{{ v1.distro_release }}' instead of 'jammy' here
+      # https://github.com/canonical/multipass/issues/1295
       source: "deb https://download.docker.com/linux/ubuntu jammy stable"
       key: |
         -----BEGIN PGP PUBLIC KEY BLOCK-----
