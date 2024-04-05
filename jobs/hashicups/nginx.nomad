@@ -9,8 +9,11 @@ job "nginx" {
 
   constraint {
     attribute = "${attr.unique.hostname}"
-    value     = "nomad-test-1"
+    value     = "nomad-client-1"
   }
+
+  // To always run on ^that client, we need the abilty to preempt other jobs.
+  priority = 65
 
   group "server" {
     network {
