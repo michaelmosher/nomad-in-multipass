@@ -11,7 +11,7 @@ locals {
   }[local.release_version]
 }
 
-job "payments" {
+job "hashicups-payments" {
   datacenters = ["multipass"]
   type        = "service"
 

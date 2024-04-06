@@ -3,7 +3,7 @@ locals {
   docker_image = "nginx:${local.docker_tag}"
 }
 
-job "nginx" {
+job "hashicups-nginx" {
   datacenters = ["multipass"]
   type        = "service"
 
@@ -57,12 +57,12 @@ locals {
   nginx_config_template = <<-EOF
     proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=STATIC:10m inactive=7d use_temp_path=off;
     upstream api {
-      {{- range nomadService "publicAPI-server" }}
+      {{- range nomadService "hashicups-publicAPI-server" }}
         server {{ .Address }}:{{ .Port }};
       {{- end }}
     }
     upstream frontend_upstream {
-      {{ range nomadService "frontend-server" -}}
+      {{ range nomadService "hashicups-frontend-server" -}}
         server {{ .Address }}:{{ .Port }};
       {{- end }}
     }
