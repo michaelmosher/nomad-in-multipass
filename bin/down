@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-instanceNamePrefix="nomad-test"
+instanceNamePrefix="nomad"
 
-for name in "$instanceNamePrefix"-{1,2,3}; do
-    multipass delete --purge $name
-done
+multipass list --format json \
+    | jq -r --arg prefix $instanceNamePrefix \
+        '.list | map(select(.name | startswith($prefix)).name)[]' \
+    | while read name; do
+        echo "deleting $name"
+        multipass delete --purge $name
+    done

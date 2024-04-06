@@ -3,7 +3,7 @@ locals {
   docker_image = "hashicorpdemoapp/public-api:${local.docker_tag}"
 }
 
-job "publicAPI" {
+job "hashicups-publicAPI" {
   datacenters = ["multipass"]
   type        = "service"
 
@@ -45,11 +45,11 @@ job "publicAPI" {
 
       template {
         data = <<-EOF
-          {{- range nomadService "productAPI-server"}}
+          {{- range nomadService "hashicups-productAPI-server"}}
             PRODUCT_API_URI=http://{{ .Address }}:{{ .Port }}
           {{- end }}
 
-          {{- range nomadService "payments-server"}}
+          {{- range nomadService "hashicups-payments-server"}}
             PAYMENT_API_URI=http://{{ .Address }}:{{ .Port }}
           {{- end }}
         EOF

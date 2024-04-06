@@ -8,7 +8,7 @@ locals {
   pg_database_name = "products"
 }
 
-job "productAPI" {
+job "hashicups-productAPI" {
   datacenters = ["multipass"]
   type        = "service"
 
@@ -45,10 +45,10 @@ job "productAPI" {
         data = <<-EOF
           {{- $db_host := "" }}{{ $db_port := "" -}}
           {{- $db_username := "" }}{{ $db_password := "" -}}
-          {{range nomadService "productAPI-database"}}
+          {{range nomadService "hashicups-productAPI-database"}}
             {{- $db_host = .Address }}{{ $db_port = .Port  -}}
           {{- end }}
-          {{- with nomadVar "nomad/jobs/productAPI" -}}
+          {{- with nomadVar "nomad/jobs/hashicups-productAPI" -}}
             {{- $db_username = .username }}{{ $db_password = .password -}}
           {{- end }}
           DB_CONNECTION={{printf "host=%s port=%d user=%s password=%s dbname=%s sslmode=disable"
@@ -92,7 +92,7 @@ job "productAPI" {
 
       template {
         data = <<-EOF
-          {{- with nomadVar "nomad/jobs/productAPI" -}}
+          {{- with nomadVar "nomad/jobs/hashicups-productAPI" -}}
           POSTGRES_USER={{.username}}
           POSTGRES_PASSWORD={{.password}}
           {{- end -}}

@@ -27,4 +27,4 @@ jq -c --null-input --arg username "$username" --arg password "$password" \
 
 # Use this script's output as input to `nomad var put` in order to create the
 # variable. For example:
-# ./create_nomad_variable_input.sh | nomad var put -in json nomad/jobs/productAPI -
+# ./create_nomad_variable_input.sh | nomad var put -in json nomad/jobs/hashicups-productAPI -

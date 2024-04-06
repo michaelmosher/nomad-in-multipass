@@ -3,7 +3,7 @@ locals {
   docker_image = "hashicorpdemoapp/frontend:${local.docker_tag}"
 }
 
-job "frontend" {
+job "hashicups-frontend" {
   datacenters = ["multipass"]
   type        = "service"
 

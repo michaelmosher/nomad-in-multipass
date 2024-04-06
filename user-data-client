@@ -208,24 +208,15 @@ write_files:
       datacenter = "multipass"
       data_dir = "/opt/nomad/data"
 
-      server {
-        enabled          = true
-        bootstrap_expect = 3
-        server_join {
-          retry_join = [
-            "nomad-test-1.local",
-            "nomad-test-2.local",
-            "nomad-test-3.local",
-          ]
-        }
-      }
-
       client {
         enabled = true
-      }
+        node_class = "nomad-client"
 
-      ui {
-        enabled = true
+        servers = [
+            "nomad-server-1.local:4647",
+            "nomad-server-2.local:4647",
+            "nomad-server-3.local:4647",
+          ]
       }
 
     path: /etc/nomad.d/nomad.hcl
