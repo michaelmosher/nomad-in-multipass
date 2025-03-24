@@ -31,10 +31,22 @@ job "staticsite" {
   datacenters = ["*"]
   type        = "service"
 
+  ui {
+    link {
+      label = "Website URL"
+      url   = "http://nomad-client-1.local:8080/services/staticsite"
+    }
+  }
+
   group "server" {
     count = 1
     network {
       port "main" {}
+    }
+
+    service {
+      name = "${JOB}"
+      port = "main"
     }
 
     task "main" {
