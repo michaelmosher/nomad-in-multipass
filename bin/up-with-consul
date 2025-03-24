@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+instanceNamePrefix="nomad-server"
+customization="--memory 512M --disk 15G"
+
+jqFilter='.list | map(select((.name | startswith($prefix)) and .state == "Running")) | length'
+
+# launch a cluster of 3 servers
+for name in "$instanceNamePrefix"-{1,2,3}; do
+    multipass launch $customization --name "$name" \
+        --cloud-init user-data-server-with-consul lts & > /dev/null 2> launch-errors.log
+    sleep 5
+done
+
+# launch one client, as well
+multipass launch $customization --name "nomad-client-1" \
+    --cloud-init user-data-client-with-consul lts
+
+while true; do
+    runningServers=$(multipass list --format json \
+        | jq --arg prefix $instanceNamePrefix "$jqFilter")
+
+    if [[ $runningServers == "3" ]]; then
+        break
+    fi
+
+    echo "Waiting for servers to be ready"
+    sleep 5
+done
+
+for name in "$instanceNamePrefix"-{1,2,3}; do
+    multipass info "$name"
+done
