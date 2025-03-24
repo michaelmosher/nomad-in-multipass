@@ -9,13 +9,13 @@ jqFilter='.list | map(select((.name | startswith($prefix)) and .state == "Runnin
 # launch a cluster of 3 servers
 for name in "$instanceNamePrefix"-{1,2,3}; do
     multipass launch $customization --name "$name" \
-        --cloud-init user-data-server jammy & > /dev/null 2> launch-errors.log
+        --cloud-init user-data-server lts & > /dev/null 2> launch-errors.log
     sleep 5
 done
 
 # launch one client, as well
 multipass launch $customization --name "nomad-client-1" \
-    --cloud-init user-data-client jammy
+    --cloud-init user-data-client lts
 
 while true; do
     runningServers=$(multipass list --format json \

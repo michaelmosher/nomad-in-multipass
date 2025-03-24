@@ -1,7 +1,6 @@
 ## template: jinja
 #cloud-config
 ---
-
 package_update: true
 package_upgrade: true
 package_reboot_if_required: true
@@ -42,9 +41,9 @@ apt:
         -----END PGP PUBLIC KEY BLOCK-----
 
     docker.list:
-      # if multipass supported jinja, we'd use '{{ v1.distro_release }}' instead of 'jammy' here
+      # if multipass supported jinja, we'd use '{{ v1.distro_release }}' instead of 'noble' here
       # https://github.com/canonical/multipass/issues/1295
-      source: "deb https://download.docker.com/linux/ubuntu jammy stable"
+      source: "deb https://download.docker.com/linux/ubuntu noble stable"
       key: |
         -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -110,9 +109,9 @@ apt:
         -----END PGP PUBLIC KEY BLOCK-----
 
     hashicorp.list:
-      # if multipass supported jinja, we'd use '{{ v1.distro_release }}' instead of 'jammy' here
+      # if multipass supported jinja, we'd use '{{ v1.distro_release }}' instead of 'noble' here
       # https://github.com/canonical/multipass/issues/1295
-      source: "deb https://apt.releases.hashicorp.com jammy main"
+      source: "deb https://apt.releases.hashicorp.com noble main"
       key: |
         -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -185,7 +184,7 @@ packages:
   - "docker-ce"
   - "docker-ce-cli"
   - "unzip"
-  - ["nomad", "1.7.*"]
+  - ["nomad", "1.9.*"]
 
 write_files:
   - content: |
