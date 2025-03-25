@@ -33,8 +33,12 @@ job "staticsite" {
 
   ui {
     link {
-      label = "Website URL"
+      label = "Live URL"
       url   = "http://nomad-client-1.local:8080/services/staticsite"
+    }
+    link {
+      label = "Canary URL (when available)"
+      url   = "http://nomad-client-1.local:8080/services/staticsite-canary"
     }
   }
 
@@ -47,6 +51,17 @@ job "staticsite" {
     service {
       name = "${JOB}"
       port = "main"
+
+      tags        = ["live"]
+      canary_tags = ["canary"]
+    }
+
+    update {
+      canary           = 1
+      min_healthy_time = "30s"
+      healthy_deadline = "5m"
+      auto_revert      = true
+      auto_promote     = false
     }
 
     task "main" {

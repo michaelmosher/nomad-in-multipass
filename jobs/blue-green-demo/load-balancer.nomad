@@ -57,11 +57,18 @@ job "load-balancer" {
 
 locals {
   nginx_config_template = <<-EOF
-    {{- $site_upstream_servers := service "staticsite" -}}
+    {{- $live_upstream_servers := service "live.staticsite" -}}
+    {{- $canary_upstream_servers := service "canary.staticsite" -}}
 
-    {{- if $site_upstream_servers -}}
-    upstream staticsite {
-    {{- range $site_upstream_servers }}
+    {{- if $live_upstream_servers -}}
+    upstream live {
+    {{- range $live_upstream_servers }}
+      server {{ .Address }}:{{ .Port }};{{- end }}
+    }{{- end }}
+
+    {{- if $canary_upstream_servers -}}
+    upstream canary {
+    {{- range $canary_upstream_servers }}
       server {{ .Address }}:{{ .Port }};{{- end }}
     }{{- end }}
 
@@ -74,9 +81,14 @@ locals {
           index  index.html index.htm;
       }
 
-      {{ if $site_upstream_servers -}}
+      {{ if $canary_upstream_servers -}}
+      location /services/staticsite-canary/ {
+        proxy_pass http://canary/;
+      }{{- end }}
+
+      {{ if $live_upstream_servers -}}
       location /services/staticsite/ {
-        proxy_pass http://staticsite/;
+        proxy_pass http://live/;
       }{{- end }}
 
       error_page 500 502 503 504  /50x.html;
